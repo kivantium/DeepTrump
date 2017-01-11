@@ -13,10 +13,11 @@ import random
 import sys
 from requests_oauthlib import OAuth1Session
 import json
-import HTMLParser
 import sys
 import codecs
 import string
+
+# specify encode (may not necessary)
 reload(sys)
 sys.setdefaultencoding("utf-8")
 sys.stdout = codecs.getwriter('utf_8')(sys.stdout) 
@@ -26,9 +27,8 @@ CS = "qsgeJg7BcVN0PSQ3yqgyTdn0v6qJnhJskIygxa776sDYGOJjgG"
 AT = "818765750844334080-XawykMR4fAbWq05H6s6WEXWtEjaJHau" 
 AS = "jtLQ8RJMFjUpedqjgr8IUG7Pd59MrMa0N3H29roE4nKlI"
 
+# open file
 text = codecs.open('speeches.txt', 'r', 'utf-8').read()
-#text = open('speeches.txt').read()
-#text = unicode(text, 'utf-8')
 print('corpus length:', len(text))
 
 chars = sorted(list(set(text)))
@@ -84,7 +84,11 @@ for iteration in range(1, 50):
     print('-' * 50)
     print('Iteration', iteration)
 
+    # learning
+    model.fit(X, y, batch_size=128, nb_epoch=1)
+    model.save('model{}.h5'.format(iteration))
 
+    # generate tweet
     generated = ''
     start_index = random.randint(0, len(text) - maxlen - 1)
     sentence = text[start_index: start_index + maxlen]
@@ -104,16 +108,16 @@ for iteration in range(1, 50):
 
         generated += next_char
         sentence = sentence[1:] + next_char
+    # encoding in Python is very difficult)
     tweet = '[{}]{}'.format(start, generated)
     tweet = tweet.decode('utf-8')
+    # replace @ to (at)
     tweet = tweet.replace('@', '(at)')[0:139]
     print(tweet)
+    # post
     params = {"status": tweet}
     req = twitter.post(url, params = params)
     if req.status_code == 200:
         print ("OK")
     else:
         print ("Error: {} {} {}".format(req.status_code, req.reason, req.text))
-    model.fit(X, y, batch_size=128, nb_epoch=1)
-    model.save('model{}.h5'.format(iteration))
-
