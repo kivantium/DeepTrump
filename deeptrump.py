@@ -28,7 +28,7 @@ AT = "818765750844334080-XawykMR4fAbWq05H6s6WEXWtEjaJHau"
 AS = "jtLQ8RJMFjUpedqjgr8IUG7Pd59MrMa0N3H29roE4nKlI"
 
 # open file
-text = codecs.open('speeches.txt', 'r', 'utf-8').read()
+text = codecs.open('data.txt', 'r', 'utf-8').read()
 print('corpus length:', len(text))
 
 chars = sorted(list(set(text)))
@@ -116,8 +116,8 @@ for iteration in range(1, 50):
     print(tweet)
     # post
     params = {"status": tweet}
-    req = twitter.post(url, params = params)
-    if req.status_code == 200:
-        print ("OK")
-    else:
-        print ("Error: {} {} {}".format(req.status_code, req.reason, req.text))
+    #req = twitter.post(url, params = params)
+    #if req.status_code == 200:
+    #    print ("OK")
+    #else:
+    #    print ("Error: {} {} {}".format(req.status_code, req.reason, req.text))
