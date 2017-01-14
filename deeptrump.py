@@ -83,18 +83,14 @@ for iteration in range(1, 50):
     print()
     print('-' * 50)
     print('Iteration', iteration)
-
     # learning
     model.fit(X, y, batch_size=128, nb_epoch=1)
-    model.save('model{}.h5'.format(iteration))
-
+    print('batch finished')
+    model.save('kana-model{}.h5'.format(iteration))
     # generate tweet
     generated = ''
     start_index = random.randint(0, len(text) - maxlen - 1)
     sentence = text[start_index: start_index + maxlen]
-    while not sentence[0].isupper():
-        start_index = random.randint(0, len(text) - maxlen - 1)
-        sentence = text[start_index: start_index + maxlen]
     start = sentence
     generated = ''
     for i in range(140):
@@ -105,7 +101,6 @@ for iteration in range(1, 50):
         preds = model.predict(x, verbose=0)[0]
         next_index = sample(preds, 0.4)
         next_char = indices_char[next_index]
-
         generated += next_char
         sentence = sentence[1:] + next_char
     # encoding in Python is very difficult)
@@ -116,8 +111,8 @@ for iteration in range(1, 50):
     print(tweet)
     # post
     params = {"status": tweet}
-    #req = twitter.post(url, params = params)
-    #if req.status_code == 200:
-    #    print ("OK")
-    #else:
-    #    print ("Error: {} {} {}".format(req.status_code, req.reason, req.text))
+    req = twitter.post(url, params = params)
+    if req.status_code == 200:
+        print ("OK")
+    else:
+        print ("Error: {} {} {}".format(req.status_code, req.reason, req.text))
